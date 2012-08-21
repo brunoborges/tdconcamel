@@ -1,4 +1,4 @@
-var index = 0;
+var index = -1;
 $(window).keydown(function (event) {
     if (event.which == 27) {
         // the following seems to fix the symptom but only in case the document has the focus
@@ -7,41 +7,38 @@ $(window).keydown(function (event) {
     }
 });
 
-$(document).ready(function () {
-    if (!window.WebSocket) {
-        $('#pictures').text("ERROR: Your browser doesn't support websockets!");
-    } else {
-        appImages.start();
-        appStatistics.start();
-    }
-});
-
 function updateImage(tweet) {
-    var localIndex = 1;
-    if (index >= 12) {
-        index = 1;
+    var localIndex = 0;
+    if (index >= 11) {
+        index = 0;
     } else {
         index++;
         localIndex = index;
     }
 
     $('#' + localIndex + ' a').addClass('loading');
-    var imageUrl = tweet.url + ':thumb';
-    var image = $('<img />')
-    .load(function () {
-        $('#' + localIndex).html('<a title="@' + tweet.name + ': ' + tweet.text + '" rel="lightbox" href="' + tweet.url + '"><img src="' + imageUrl + '" /></a>');
-        $('#' + localIndex + ' a').removeClass('loading');
-    })
-    .error(function () {
-        $('#' + localIndex + ' a').removeClass('loading');
-    //console.log("error loading " + imageUrl);
-    })
 
-    .attr('src', imageUrl);
+    var imageUrl = tweet.url + ':thumb';
+    $("<img />").load(function () {
+        $('#' + localIndex + ' a').attr("href", tweet.url);
+        $('#' + localIndex + ' a').attr("rel", "lightbox");
+        $('#' + localIndex + ' a').attr("title", "@" + tweet.name + ": " + tweet.text);
+        $('#' + localIndex + ' a img').attr("src", imageUrl);
+        //$('#' + localIndex).html('<a title="@' + tweet.name + ': ' + tweet.text + '" href="' + tweet.url + '"><img src="' + imageUrl + '" /></a>');
+        $('#' + localIndex + ' a').removeClass('loading');
+    }).error(function () {
+        $('#' + localIndex + ' a').removeAttr("rel", "lightbox");
+        $('#' + localIndex + ' a').removeClass('loading');
+    }).attr('src', imageUrl);
 }
 
 function setStats(data) {
     var statistics = jQuery.parseJSON(data);
+
+    if (startedOn == 0) {
+        startUptimeCounter(statistics.startedOn);
+    }
+
     $('#tweetCount').text(statistics.tweetCount);
     $('#imageCount').text(statistics.imageCount);
 }
@@ -53,7 +50,7 @@ function gallery(data) {
 
 var appImages = {
     start:function () {
-        var location = "ws://localhost:9292/tdconcamel/images";
+        var location = "ws://"+window.document.location.host+"/tdconcamel/images";
         this._ws = new WebSocket(location);
         this._ws.onmessage = this._onmessage;
         this._ws.onclose = this._onclose;
@@ -63,6 +60,10 @@ var appImages = {
         if (m.data) {
             gallery(m.data);
         }
+    },
+
+    stop:function() {
+        this._ws.close();
     },
 
     _onclose:function (m) {
@@ -76,9 +77,13 @@ var appStatistics = {
             this._ws.send("clear");
         }
     },
+    
+    stop:function() {
+        this._ws.close();
+    },
 
     start:function () {
-        var location = "ws://localhost:9292/tdconcamel/statistics";
+        var location = "ws://"+window.document.location.host+"/tdconcamel/statistics";
         this._ws = new WebSocket(location);
         this._ws.onmessage = this._onmessage;
         this._ws.onclose = this._onclose;
@@ -87,7 +92,6 @@ var appStatistics = {
     _onmessage:function (m) {
         if (m.data) {
             setStats(m.data);
-            startUptimeCounter(m.data);
         }
     },
 
@@ -103,13 +107,8 @@ var startedOn = 0;
 var uptime = 0;
 var intervalId = 0;
 
-function startUptimeCounter(data) {
-    if (startedOn > 0) {
-        return;
-    }
-
-    var statistics = jQuery.parseJSON(data);
-    startedOn = statistics.startedOn;
+function startUptimeCounter(arg) {
+    startedOn = arg;
     uptime = new Date().getTime();
     intervalId = setInterval(refreshUptime, 1000);
 }
@@ -124,7 +123,59 @@ function refreshUptime() {
     var minutesDifference = Math.floor(difference/1000/60);
     difference -= minutesDifference*1000*60
     var secondsDifference = Math.floor(difference/1000);
+
+    if (hoursDifference < 10) hoursDifference = "0" + hoursDifference
+    if (minutesDifference < 10) minutesDifference = "0" + minutesDifference
+    if (secondsDifference < 10) secondsDifference = "0" + secondsDifference
  
     $("#uptime").text(daysDifference + "d "+ hoursDifference+":"+minutesDifference+":"+secondsDifference);
 }
 
+/**
+ * Setup rows and columns for gallery
+ */
+$(document).ready(setupGallery);
+
+var rows = 3;
+var cols = 4;
+var cells = cols * rows;
+
+function setupGallery() {
+    var picIndex = 0;
+    var localRows = 0;
+    while(localRows < rows) {
+        var localCols = 0;
+        $("#pictures").append("<div class='imageRow' id='imageRow_"+localRows+"'>");
+        while(localCols < cols) {
+            $("#imageRow_"+localRows).append("<div id='"+(picIndex)+"' class='single'>");
+            $("#"+picIndex++).append("<a href='#'><img src='images/tdc.png'/></a>");
+            localCols++;
+        }
+        localRows++;
+    }
+}
+
+var running = true;
+
+$(document).ready(function() {
+    if (!window.WebSocket) {
+        $('#pictures').text("ERROR: Your browser doesn't support websockets!");
+    } else {
+        appImages.start();
+        appStatistics.start();
+    }
+
+    $("#pause").click(function() {
+        if (running) {
+            appStatistics.stop();
+            appImages.stop();
+            $(this).text("Resumir");
+            running = false;
+        } else {
+            appStatistics.start();
+            appImages.start();
+            $(this).text("Pausar");
+            running = true;
+        }
+    })
+});
