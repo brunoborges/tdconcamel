@@ -1,6 +1,6 @@
 package com.brunoborges.tdconcamel;
 
-import java.io.IOException;
+import java.io.InputStream;
 import java.util.Properties;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
@@ -12,7 +12,6 @@ import org.apache.camel.processor.idempotent.MemoryIdempotentRepository;
 public class TDCOnCamelRoute extends RouteBuilder {
 
     public static final String UNIQUE_IMAGE_URL = "UNIQUE_IMAGE_URL";
-
     Properties configProperties = new Properties();
 
     @Override
@@ -82,14 +81,39 @@ public class TDCOnCamelRoute extends RouteBuilder {
                 .routeId("replaceStream");
     }
 
-    private void setupTwitterComponent() throws IOException {
+    private void setupTwitterComponent() {
         TwitterComponent tc = new TwitterComponent();
         getContext().addComponent("twitter", tc);
 
-        configProperties.load(TDCOnCamelRoute.class.getResourceAsStream("/app.properties"));
-        tc.setAccessToken(configProperties.getProperty("twitter.accessToken"));
-        tc.setAccessTokenSecret(configProperties.getProperty("twitter.accessTokenSecret"));
-        tc.setConsumerKey(configProperties.getProperty("twitter.consumerKey"));
-        tc.setConsumerSecret(configProperties.getProperty("twitter.consumerSecret"));
+        String accessToken = System.getProperty("twitter.accessToken");
+        String accessTokenSecret = System.getProperty("twitter.accessTokenSecret");
+        String consumerKey = System.getProperty("twitter.consumerKey");
+        String consumerSecret = System.getProperty("twitter.consumerSecret");
+
+        try (InputStream is = TDCOnCamelRoute.class.getResourceAsStream("/app.properties")) {
+            configProperties.load(is);
+
+            if (accessToken == null) {
+                accessToken = configProperties.getProperty("twitter.accessToken");
+            }
+
+            if (accessTokenSecret == null) {
+                accessTokenSecret = configProperties.getProperty("twitter.accessTokenSecret");
+            }
+
+            if (consumerKey == null) {
+                consumerKey = configProperties.getProperty("twitter.consumerKey");
+            }
+
+            if (consumerSecret == null) {
+                consumerSecret = configProperties.getProperty("twitter.consumerSecret");
+            }
+        } catch (Exception e) {
+        }
+
+        tc.setAccessToken(accessToken);
+        tc.setAccessTokenSecret(accessTokenSecret);
+        tc.setConsumerKey(consumerKey);
+        tc.setConsumerSecret(consumerSecret);
     }
 }
