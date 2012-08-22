@@ -29,6 +29,7 @@ public class TDCOnCamelRoute extends RouteBuilder {
                 .process(new ImageExtractor())
                 .process(statisticsProcessor)
                 .filter(body().isInstanceOf(Tweet.class))
+                .throttle(12)
                 .idempotentConsumer(header(UNIQUE_IMAGE_URL), MemoryIdempotentRepository.memoryIdempotentRepository(10000))
                 .marshal().json(JsonLibrary.Jackson)
                 .to("websocket:0.0.0.0:8080/tdconcamel/images?sendToAll=true&staticResources=classpath:web/.")
