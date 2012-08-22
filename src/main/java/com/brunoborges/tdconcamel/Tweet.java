@@ -5,9 +5,6 @@ public class Tweet {
     private String text;
     private String url;
 
-    private long tweetCount;
-    private long imageCount;
-
     public Tweet withName(String name) {
         this.name = name;
         return this;
@@ -18,35 +15,17 @@ public class Tweet {
         return this;
     }
 
-    public Tweet withImageUrl(String url) {
+    public Tweet withUrl(String url) {
         this.url = url;
         return this;
     }
     
-    public Tweet withCount(long tweetCount) {
-        this.tweetCount = tweetCount;
-        return this;
-    }
-
-    public Tweet withImageCount(long imageCount) {
-        this.imageCount = imageCount;
-        return this;
-    }
-
-    public long getImageCount() {
-        return imageCount;
-    }
-
     public String getName() {
         return name;
     }
 
     public String getText() {
         return text;
-    }
-
-    public long getTweetCount() {
-        return tweetCount;
     }
 
     public String getUrl() {

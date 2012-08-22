@@ -41,6 +41,7 @@ function setStats(data) {
 
     $('#tweetCount').text(statistics.tweetCount);
     $('#imageCount').text(statistics.imageCount);
+    $("#olympic").text(statistics.keywords);
 }
 
 function gallery(data) {
@@ -68,6 +69,14 @@ var appImages = {
 
     _onclose:function (m) {
         this._ws = null;
+    },
+
+    search:function(search) {
+        this._ws.send("search "+search);
+    },
+    
+    sample:function() {
+        this._ws.send("sample");
     }
 };
     

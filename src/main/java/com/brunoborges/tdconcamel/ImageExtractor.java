@@ -12,16 +12,15 @@ public class ImageExtractor implements Processor {
         Status status = exchange.getIn().getBody(Status.class);
 
         MediaEntity[] mediaEntities = status.getMediaEntities();
-        if (mediaEntities != null) {
-            for (MediaEntity mediaEntity : mediaEntities) {
-                exchange.getIn().setBody(new Tweet()
-                        .withName(status.getUser().getScreenName())
-                        .withText(status.getText())
-                        .withImageUrl(mediaEntity.getMediaURL().toString()));
+        if (mediaEntities != null && mediaEntities.length >= 0) {
+            MediaEntity mediaEntity = mediaEntities[0]; // only the first image
 
-                exchange.getIn().setHeader(TDCOnCamelRoute.UNIQUE_IMAGE_URL, mediaEntity.getMediaURL().toString());
-                break; //grab only the first image
-            }
+            exchange.getIn().setBody(new Tweet()
+                    .withName(status.getUser().getScreenName())
+                    .withText(status.getText())
+                    .withUrl(mediaEntity.getMediaURL().toString()));
+
+            exchange.getIn().setHeader(TDCOnCamelRoute.UNIQUE_IMAGE_URL, mediaEntity.getMediaURL().toString());
         }
     }
 }

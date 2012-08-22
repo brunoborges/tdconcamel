@@ -19,8 +19,6 @@ public class StatisticsProcessor implements Processor {
         } else if (exchange.getIn().getBody() instanceof Tweet) {
             statistics.increaseImageAndTweetCount();
         }
-
-        exchange.getIn().setBody(statistics);
     }
 
     public void clear() {

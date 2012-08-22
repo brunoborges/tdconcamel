@@ -16,6 +16,7 @@ public class Statistics {
     private Date startedOn = Calendar.getInstance().getTime();
     private long tweetCount = 0L;
     private long imageCount = 0L;
+    private String keywords;
 
     void increaseTweetCount() {
         tweetCount++;
@@ -24,6 +25,14 @@ public class Statistics {
     void increaseImageAndTweetCount() {
         increaseTweetCount();
         imageCount++;
+    }
+
+    public String getKeywords() {
+        return keywords;
+    }
+    
+    public void setKeywords(String arg) {
+        this.keywords = arg;
     }
 
     public long getImageCount() {
