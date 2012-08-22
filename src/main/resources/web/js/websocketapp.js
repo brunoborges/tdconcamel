@@ -178,12 +178,12 @@ $(document).ready(function() {
         if (running) {
             appStatistics.stop();
             appImages.stop();
-            $(this).text("Resumir");
+            $(this).text("Resume");
             running = false;
         } else {
             appStatistics.start();
             appImages.start();
-            $(this).text("Pausar");
+            $(this).text("Pause");
             running = true;
         }
     })
