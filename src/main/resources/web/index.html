@@ -13,26 +13,37 @@
         <script src="js/lightbox.js"></script>
         <script src="js/websocketapp.js"></script>
     </head>
-    <body>
+    <body style="margin-top: 30px">
         <div id="content">
-            <div id="overview">
-                <div style="width: 50%;float: left;">
-                    <h3>Live Twitter Image Stream for <span id="olympic">photo</span></h3>
-                    Until now, we got <span id="tweetCount">0</span> tweets and <span id="imageCount">0</span> images
-                </div>
-                <div style="width: 50%;  float: left;">
-                    <a href="#" id="pause">Pause</a>
-                </div>
+            <div id="disclaimer" style="height:600px;">
+                <h3 style="font-size: 3em">AVISO IMPORTANTE: #NSFW</h3>
+                <p style="font-size: 2em">O conteúdo desta DEMO vem da Internet</p>
+                <p style="font-size: 2em">E a Internet produz muita, mas MUITA informação</p>
+                <p style="font-size: 2em">E desta informação toda, grande parte é... isso mesmo...</p>
+                <p style="font-size: 2em">Você poderá se sentir ofendido, ou rir muito</p>
+                <p style="font-size: 2em">Então prepare-se, ou saia da sala</p>
+                <p><a href="#" id="continuarDisclaimer">Continuar</a></p>
             </div>
-            <br style="clear: both"/>
-            <div class="section" id="pictures">
-                <!--
-                <div class="imageRow">
-                    <div id="1" class="single">
-                        <a href="#"><img src="images/tdc.png"/></a>
+            <div id="camelapp">
+                <div id="overview">
+                    <div style="width: 50%;float: left;">
+                        <h3>Live Twitter Image Stream for <span id="olympic">photo</span></h3>
+                        Until now, we got <span id="tweetCount">0</span> tweets and <span id="imageCount">0</span> images
+                    </div>
+                    <div style="width: 50%;  float: left;">
+                        <a href="#" id="pause">Pause</a>
                     </div>
                 </div>
-                -->
+                <br style="clear: both"/>
+                <div class="section" id="pictures">
+                    <!--
+                    <div class="imageRow">
+                        <div id="1" class="single">
+                            <a href="#"><img src="images/tdc.png"/></a>
+                        </div>
+                    </div>
+                    -->
+                </div>
             </div>
             <div id="footer">
                 Powered by <a href="http://camel.apache.org/" target="_blank">Apache Camel</a>. 

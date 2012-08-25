@@ -22,15 +22,15 @@ public class TDCOnCamelRoute extends RouteBuilder {
         statisticsProcessor.getCurrentStatistics().setKeywords(configProperties.getProperty("twitter.searchTerm"));
 
         from("twitter://streaming/sample?type=event")
-                .to("direct:images")
+                .to("seda:images")
                 .routeId("twitterStreaming");
 
-        from("direct:images")
+        from("seda:images")
                 .process(new ImageExtractor())
                 .process(statisticsProcessor)
                 .filter(body().isInstanceOf(Tweet.class))
-                .throttle(12)
-                .idempotentConsumer(header(UNIQUE_IMAGE_URL), MemoryIdempotentRepository.memoryIdempotentRepository(10000))
+                .throttle(4)
+                //.idempotentConsumer(header(UNIQUE_IMAGE_URL), MemoryIdempotentRepository.memoryIdempotentRepository(10000))
                 .marshal().json(JsonLibrary.Jackson)
                 .to("websocket:0.0.0.0:8080/tdconcamel/images?sendToAll=true&staticResources=classpath:web/.")
                 .routeId("websocketImages");
@@ -50,10 +50,12 @@ public class TDCOnCamelRoute extends RouteBuilder {
                 .process(new Processor() {
             @Override
             public void process(Exchange exchange) throws Exception {
-                exchange.getContext().stopRoute("twitterStreaming");
-                exchange.getContext().removeRoute("twitterStreaming");
-
                 String body = exchange.getIn().getBody(String.class);
+
+                if (body.startsWith("search ") || body.equals("sample")) {
+                    exchange.getContext().stopRoute("twitterStreaming");
+                    exchange.getContext().removeRoute("twitterStreaming");
+                }
 
                 if (body.startsWith("search ")) {
                     final String query = body.substring(7); // search_
@@ -62,7 +64,7 @@ public class TDCOnCamelRoute extends RouteBuilder {
                         @Override
                         public void configure() throws Exception {
                             from("twitter://streaming/filter?type=event&keywords=" + query)
-                                    .to("direct:images")
+                                    .to("seda:images")
                                     .routeId("twitterStreaming");
                         }
                     });
@@ -72,7 +74,7 @@ public class TDCOnCamelRoute extends RouteBuilder {
                         @Override
                         public void configure() throws Exception {
                             from("twitter://streaming/sample?type=event")
-                                    .to("direct:images")
+                                    .to("seda:images")
                                     .routeId("twitterStreaming");
                         }
                     });

@@ -167,11 +167,16 @@ function setupGallery() {
 var running = true;
 
 $(document).ready(function() {
-    if (!window.WebSocket) {
-        $('#pictures').text("ERROR: Your browser doesn't support websockets!");
-    } else {
+    $("#continuarDisclaimer").click(function() {
+        $("#camelapp").show();
+        $("#disclaimer").hide();
         appImages.start();
         appStatistics.start();
+    });
+    $("#camelapp").hide();
+
+    if (!window.WebSocket) {
+        $('#pictures').text("ERROR: Your browser doesn't support websockets!");
     }
 
     $("#pause").click(function() {
