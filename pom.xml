@@ -33,7 +33,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-jackson</artifactId>
+            <artifactId>camel-gson</artifactId>
             <version>${camel.version}</version>
         </dependency>
 
