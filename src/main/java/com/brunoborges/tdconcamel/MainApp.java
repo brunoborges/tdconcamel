@@ -13,7 +13,6 @@ public final class MainApp {
         System.out.println("\n\n\n\n");
 
         Main main = new Main();
-        main.enableHangupSupport();
         TDCOnCamelRoute route = new TDCOnCamelRoute();
         main.addRouteBuilder(route);
         main.run();

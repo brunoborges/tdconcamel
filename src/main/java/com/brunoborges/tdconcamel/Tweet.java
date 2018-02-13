@@ -31,4 +31,13 @@ public class Tweet {
     public String getUrl() {
         return url;
     }
+
+    @Override
+    public String toString() {
+        return "Tweet{" +
+                "name='" + name + '\'' +
+                ", text='" + text + '\'' +
+                ", url='" + url + '\'' +
+                '}';
+    }
 }

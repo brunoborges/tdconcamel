@@ -45,7 +45,9 @@ function setStats(data) {
 }
 
 function gallery(data) {
+    console.log(data);
     var tweet = jQuery.parseJSON(data);
+    console.log(tweet);
     updateImage(tweet);
 }
 
