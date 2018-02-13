@@ -12,7 +12,7 @@ public class ImageExtractor implements Processor {
         Status status = exchange.getIn().getBody(Status.class);
 
         MediaEntity[] mediaEntities = status.getMediaEntities();
-        if (mediaEntities != null && mediaEntities.length >= 0) {
+        if (mediaEntities != null && mediaEntities.length > 0) {
             MediaEntity mediaEntity = mediaEntities[0]; // only the first image
 
             exchange.getIn().setBody(new Tweet()
