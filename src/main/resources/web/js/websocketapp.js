@@ -33,9 +33,10 @@ function updateImage(tweet) {
 }
 
 function setStats(data) {
-    var statistics = jQuery.parseJSON(data);
+    console.log(data);
+    var statistics = JSON.parse(data);
 
-    if (startedOn == 0) {
+    if (startedOn === 0) {
         startUptimeCounter(statistics.startedOn);
     }
 
@@ -169,13 +170,13 @@ function setupGallery() {
 var running = true;
 
 $(document).ready(function() {
-    $("#continuarDisclaimer").click(function() {
-        $("#camelapp").show();
+    //$("#continuarDisclaimer").click(function() {
+       // $("#camelapp").show();
         $("#disclaimer").hide();
         appImages.start();
         appStatistics.start();
-    });
-    $("#camelapp").hide();
+    //});
+    //$("#camelapp").hide();
 
     if (!window.WebSocket) {
         $('#pictures').text("ERROR: Your browser doesn't support websockets!");

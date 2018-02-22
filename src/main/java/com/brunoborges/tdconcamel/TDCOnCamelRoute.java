@@ -20,11 +20,12 @@ public class TDCOnCamelRoute extends RouteBuilder {
                 getContext().getComponent("twitter", TwitterComponent.class);
         setupTwitterComponent(tc);
 
+        String initialSearchTerm = configProperties.getProperty("twitter.searchTerm");
         final StatisticsProcessor statisticsProcessor = new StatisticsProcessor();
         statisticsProcessor.getCurrentStatistics().setKeywords(
-                configProperties.getProperty("twitter.searchTerm"));
+                initialSearchTerm);
 
-        from("twitter://streaming/sample?type=event")
+        from("twitter://streaming/filter?type=event&keywords=" + initialSearchTerm)
                 .to("seda:images")
               .routeId("twitterStreaming");
 
@@ -46,7 +47,8 @@ public class TDCOnCamelRoute extends RouteBuilder {
                 .constant(statisticsProcessor.getCurrentStatistics())
                 .marshal()
                 .json(JsonLibrary.Gson)
-                .process(exchange -> System.out.println(new String((byte[]) exchange.getIn().getBody())))
+                .process(exchange -> exchange.getIn().setBody(new String((byte[]) exchange.getIn().getBody())))
+                .process(exchange -> System.out.println(exchange.getIn().getBody()))
                 .to("websocket:0.0.0.0:8080/tdconcamel/statistics?sendToAll=true")
                 .routeId("reportStatistics");
 
