@@ -18,12 +18,14 @@ function updateImage(tweet) {
 
     $('#' + localIndex + ' a').addClass('loading');
 
-    var imageUrl = tweet.url + ':thumb';
+    var imageUrl = tweet.url;
     $("<img />").load(function () {
         $('#' + localIndex + ' a').attr("href", tweet.url);
         $('#' + localIndex + ' a').attr("rel", "lightbox");
         $('#' + localIndex + ' a').attr("title", "@" + tweet.name + ": " + tweet.text);
         $('#' + localIndex + ' a img').attr("src", imageUrl);
+        $('#' + localIndex + ' a img').attr("width", "100");
+        $('#' + localIndex + ' a img').attr("height", "100");
         //$('#' + localIndex).html('<a title="@' + tweet.name + ': ' + tweet.text + '" href="' + tweet.url + '"><img src="' + imageUrl + '" /></a>');
         $('#' + localIndex + ' a').removeClass('loading');
     }).error(function () {
