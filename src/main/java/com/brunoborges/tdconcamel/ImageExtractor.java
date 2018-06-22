@@ -14,15 +14,13 @@ public class ImageExtractor implements Processor {
         MediaEntity[] mediaEntities = status.getMediaEntities();
         if (mediaEntities != null && mediaEntities.length > 0) {
             MediaEntity mediaEntity = mediaEntities[0]; // only the first image
-
+            
             Tweet tweet = new Tweet()
                     .withName(status.getUser().getScreenName())
                     .withText(status.getText())
                     .withUrl(mediaEntity.getMediaURL().toString());
 
             exchange.getIn().setBody(tweet);
-
-            System.out.println("Tweet found with image: " + tweet);
 
             exchange.getIn().setHeader(TDCOnCamelRoute.UNIQUE_IMAGE_URL, mediaEntity.getMediaURL().toString());
         }
