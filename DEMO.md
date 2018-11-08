@@ -21,3 +21,6 @@ az container create -g $GRP --name $ACR --image $ACR_REPO/$IMG_NAME \
 
 # Get logs
 az container logs -g $GRP --name $ACR --follow
+
+# Delete instance
+az container delete -g $GRP --name $ACR 
