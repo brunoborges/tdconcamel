@@ -13,8 +13,7 @@ public final class MainApp {
         System.out.println("\n\n\n\n");
 
         Main main = new Main();
-        TDCOnCamelRoute route = new TDCOnCamelRoute();
-        main.addRouteBuilder(route);
+        main.addRouteBuilder(new TISAppCamelRoute());
         main.run();
     }
 

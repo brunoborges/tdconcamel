@@ -22,7 +22,7 @@ public class ImageExtractor implements Processor {
 
             exchange.getIn().setBody(tweet);
 
-            exchange.getIn().setHeader(TDCOnCamelRoute.UNIQUE_IMAGE_URL, mediaEntity.getMediaURL().toString());
+            exchange.getIn().setHeader(TISAppCamelRoute.UNIQUE_IMAGE_URL, mediaEntity.getMediaURL().toString());
         }
     }
 }

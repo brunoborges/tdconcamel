@@ -56,7 +56,7 @@ function gallery(data) {
 
 var appImages = {
     start:function () {
-        var location = "ws://"+window.document.location.host+"/tdconcamel/images";
+        var location = "ws://"+window.document.location.host+"/images";
         this._ws = new WebSocket(location);
         this._ws.onmessage = this._onmessage;
         this._ws.onclose = this._onclose;
@@ -97,7 +97,7 @@ var appStatistics = {
     },
 
     start:function () {
-        var location = "ws://"+window.document.location.host+"/tdconcamel/statistics";
+        var location = "ws://"+window.document.location.host+"/statistics";
         this._ws = new WebSocket(location);
         this._ws.onmessage = this._onmessage;
         this._ws.onclose = this._onclose;
