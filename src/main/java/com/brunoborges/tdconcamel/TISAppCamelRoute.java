@@ -7,6 +7,8 @@ import org.apache.camel.component.websocket.WebsocketComponent;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.processor.idempotent.MemoryIdempotentRepository;
 import org.apache.camel.spi.ShutdownStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +17,8 @@ public class TISAppCamelRoute extends RouteBuilder {
 
     public static final String UNIQUE_IMAGE_URL = "UNIQUE_IMAGE_URL";
     Properties configProperties = new Properties();
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(TISAppCamelRoute.class);
 
     @Override
     public void configure() throws Exception {
@@ -55,7 +59,7 @@ public class TISAppCamelRoute extends RouteBuilder {
                 .json(JsonLibrary.Gson)
                 .process(exchange -> exchange.getIn()
                         .setBody(new String((byte[]) exchange.getIn().getBody())))
-                .process(exchange -> System.out.println(exchange.getIn().getBody()))
+                .process(exchange -> LOGGER.info("Tweet received: " + exchange.getIn().getBody()))
                 .to("websocket:0.0.0.0:8080/statistics?sendToAll=true").routeId("reportStatistics");
 
         from("websocket:0.0.0.0:8080/statistics").filter(body().isEqualTo("clear"))
